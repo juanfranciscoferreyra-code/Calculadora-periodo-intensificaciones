@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intensificación Docente | E.E.S. N° 6</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Encabezado simple -->
+    <header class="bg-sky-950 text-white shadow-sm">
+        <div class="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between gap-3">
+            <div>
+                <h1 class="text-base sm:text-lg font-extrabold tracking-tight">
+                    Intensificación Docente — E.E.S. N° 6
+                </h1>
+                <p class="text-xs text-sky-200">
+                    Elegí materia, año, orientación y período en que desaprobó
+                </p>
+            </div>
+            <button type="button" onclick="limpiarSimple()" class="text-xs font-semibold bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-lg transition">
+                Reiniciar
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-3xl w-full mx-auto px-4 py-6 space-y-5">
+
+        <!-- 2 PDFs normativos arriba -->
+        <section class="bg-white border border-slate-200 rounded-2xl p-4 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Normativa oficial (ante dudas, consultá los PDFs)
+                </span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                        <div class="text-[10px] font-bold uppercase text-rose-700">PDF • Disp. 40/26</div>
+                        <div class="text-xs font-bold text-slate-900 truncate">Adecuaciones Régimen Académico</div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="abrirVisorDocumento('DISP_40_26')" class="text-xs font-semibold bg-white hover:bg-slate-100 border border-slate-300 px-2.5 py-1.5 rounded-lg">
+                            Ver
+                        </button>
+                        <button type="button" onclick="descargarDocumentoPdfDirecto('DISP_40_26')" class="text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg">
+                            PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-2">
+                    <div class="min-w-0">
+                        <div class="text-[10px] font-bold uppercase text-rose-700">PDF • Res. 1650/24</div>
+                        <div class="text-xs font-bold text-slate-900 truncate">Régimen Académico Secundaria</div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="abrirVisorDocumento('RES_1650_24')" class="text-xs font-semibold bg-white hover:bg-slate-100 border border-slate-300 px-2.5 py-1.5 rounded-lg">
+                            Ver
+                        </button>
+                        <button type="button" onclick="descargarDocumentoPdfDirecto('RES_1650_24')" class="text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white px-2.5 py-1.5 rounded-lg">
+                            PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Selección simple: Materia, Año, Orientación y Período -->
+        <section class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
+            <h2 class="text-sm font-bold text-slate-900">1. Datos de la cursada</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <label for="anioSelect" class="block text-xs font-semibold text-slate-600 mb-1">Año</label>
+                    <select id="anioSelect" onchange="actualizarMaterias(); calcularSimple();"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                        <option value="1°">1° Año</option>
+                        <option value="2°">2° Año</option>
+                        <option value="3°">3° Año</option>
+                        <option value="4°" selected>4° Año</option>
+                        <option value="5°">5° Año</option>
+                        <option value="6°">6° Año</option>
+                    </select>
+                </div>
+
+                <div id="boxOrientacion">
+                    <label for="orientacionSelect" class="block text-xs font-semibold text-slate-600 mb-1">Orientación</label>
+                    <select id="orientacionSelect" onchange="actualizarMaterias(); calcularSimple();"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                        <option value="CS_SOCIALES" selected>Cs. Sociales</option>
+                        <option value="COMUNICACION">Comunicación</option>
+                    </select>
+                    <p id="avisoBasico" class="hidden text-[11px] text-slate-400 mt-1">Ciclo Básico (sin orientación)</p>
+                </div>
+
+                <div>
+                    <label for="periodoSelect" class="block text-xs font-semibold text-slate-600 mb-1">Período que desaprobó</label>
+                    <select id="periodoSelect" onchange="calcularSimple();"
+                        class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium">
+                        <option value="1C" selected>Primer cuatrimestre</option>
+                        <option value="2C">Segundo cuatrimestre</option>
+                        <option value="AMBOS">Ambos cuatrimestres</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label for="materiaSelect" class="block text-xs font-semibold text-slate-600 mb-1">Materia</label>
+                <select id="materiaSelect" onchange="calcularSimple();"
+                    class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-900">
+                </select>
+            </div>
+        </section>
+
+        <!-- Respuesta clara y breve -->
+        <section class="bg-white border border-slate-200 rounded-2xl p-5 space-y-3">
+            <div class="text-xs font-bold uppercase tracking-wider text-sky-800" id="etiquetaCaso"></div>
+            <h2 class="text-base sm:text-lg font-extrabold text-slate-900" id="tituloRespuesta"></h2>
+            <p class="text-sm text-slate-700 leading-relaxed" id="textoRespuesta"></p>
+            <div class="p-3.5 rounded-xl bg-sky-50 border border-sky-200 text-xs sm:text-sm text-sky-950 font-medium space-y-1.5" id="detallePeriodos"></div>
+            <p class="text-xs text-slate-500 pt-1">
+                Aplica a quienes cursan la materia por primera vez o la recursan (no incluye pendientes de años anteriores). Ante cualquier duda, revisá los PDFs de <strong>Disp. 40/26</strong> y <strong>Res. 1650/24</strong> arriba.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Visor de PDFs -->
+    <div id="modalVisorDocumento" class="fixed inset-0 z-50 hidden bg-slate-900/80 flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-slate-800 rounded-2xl max-w-4xl w-full h-[88vh] flex flex-col overflow-hidden border border-slate-700">
+            <div class="px-4 py-3 bg-slate-950 text-white flex items-center justify-between gap-2">
+                <h3 id="tituloVisorDoc" class="font-bold text-xs sm:text-sm truncate">Documento Normativo</h3>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button type="button" onclick="descargarDocumentoActual()" class="text-xs bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-lg">
+                        Descargar PDF
+                    </button>
+                    <button type="button" onclick="cerrarVisorDocumento()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+            <div id="paginasPdfContainer" class="flex-grow overflow-auto bg-slate-700 p-3 flex flex-col"></div>
+        </div>
+    </div>
+
+    <script>
+        const MATERIAS_EES6 = {
+            basico: {
+                '1°': ['Prácticas del Lenguaje', 'Matemática', 'Ciencias Sociales', 'Ciencias Naturales', 'Educación Artística', 'Educación Física', 'Inglés', 'Construcción de Ciudadanía'],
+                '2°': ['Prácticas del Lenguaje', 'Matemática', 'Historia', 'Geografía', 'Biología', 'Físico-Química', 'Educación Artística', 'Educación Física', 'Inglés', 'Construcción de Ciudadanía'],
+                '3°': ['Prácticas del Lenguaje', 'Matemática', 'Historia', 'Geografía', 'Biología', 'Físico-Química', 'Educación Artística', 'Educación Física', 'Inglés', 'Construcción de Ciudadanía']
+            },
+            CS_SOCIALES: {
+                '4°': ['Matemática', 'Literatura', 'Educación Física', 'Inglés', 'Salud y Adolescencia', 'Introducción a la Física', 'Biología', 'Historia', 'Geografía', 'NTICx', 'Psicología'],
+                '5°': ['Matemática', 'Literatura', 'Educación Física', 'Inglés', 'Política y Ciudadanía', 'Introducción a la Química', 'Geografía', 'Historia', 'Comunicación, Cultura y Sociedad', 'Economía Política', 'Sociología'],
+                '6°': ['Matemática', 'Literatura', 'Educación Física', 'Inglés', 'Trabajo y Ciudadanía', 'Filosofía', 'Arte', 'Historia', 'Geografía', 'Proyecto de Investigación en Ciencias Sociales']
+            },
+            COMUNICACION: {
+                '4°': ['Matemática', 'Literatura', 'Educación Física', 'Inglés', 'Salud y Adolescencia', 'Introducción a la Física', 'Biología', 'Historia', 'Geografía', 'NTICx', 'Psicología', 'Introducción a la Comunicación'],
+                '5°': ['Matemática', 'Literatura', 'Educación Física', 'Inglés', 'Política y Ciudadanía', 'Introducción a la Química', 'Geografía', 'Historia', 'Observatorio de Medios', 'Comunicación y culturas del consumo', 'Observatorio de comunicación, cultura y sociedad'],
+                '6°': ['Matemática', 'Literatura', 'Educación Física', 'Inglés', 'Trabajo y Ciudadanía', 'Arte', 'Filosofía', 'Historia', 'Geografía', 'Taller de producción en lenguajes', 'Taller de comunicación institucional y comunitaria', 'Comunicación y transformaciones socioculturales del siglo XXI']
+            }
+        };
+
+        function actualizarMaterias() {
+            const anio = document.getElementById('anioSelect').value;
+            const anioNum = parseInt(anio, 10) || 4;
+            const oriSel = document.getElementById('orientacionSelect');
+            const aviso = document.getElementById('avisoBasico');
+
+            if (anioNum <= 3) {
+                oriSel.disabled = true;
+                oriSel.classList.add('opacity-50');
+                aviso.classList.remove('hidden');
+            } else {
+                oriSel.disabled = false;
+                oriSel.classList.remove('opacity-50');
+                aviso.classList.add('hidden');
+            }
+
+            const lista = anioNum <= 3
+                ? (MATERIAS_EES6.basico[anio] || [])
+                : ((MATERIAS_EES6[oriSel.value] || MATERIAS_EES6.CS_SOCIALES)[anio] || []);
+
+            const matSel = document.getElementById('materiaSelect');
+            const prev = matSel.value;
+            matSel.innerHTML = lista.map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
+            if (prev && lista.includes(prev)) matSel.value = prev;
+        }
+
+        function calcularSimple() {
+            const anio = document.getElementById('anioSelect').value;
+            const anioNum = parseInt(anio, 10) || 4;
+            const ori = anioNum <= 3
+                ? 'Ciclo Básico'
+                : (document.getElementById('orientacionSelect').value === 'CS_SOCIALES' ? 'Cs. Sociales' : 'Comunicación');
+            const materia = document.getElementById('materiaSelect').value || 'Materia';
+            const periodo = document.getElementById('periodoSelect').value;
+
+            document.getElementById('etiquetaCaso').textContent = `${materia} • ${anio} Año • ${ori}`;
+
+            let titulo = '';
+            let texto = '';
+            let periodos = '';
+
+            if (periodo === '1C') {
+                titulo = 'Intensifica en el Primer período: primera quincena de julio (y opcionalmente segunda quincena de junio según Disp. 40/26).';
+                texto = 'Aprueba la intensificación con 4 o más. Si no aprueba en ese período, sigue intensificando en el Segundo período (dos semanas previas al cierre del segundo cuatrimestre), que puede ser para ambos según el caso: para quienes todavía tienen desaprobado el primer cuatrimestre o para quienes tienen que intensificar el segundo. Si aún no aprueba, sigue en el Tercer período (dos semanas posteriores al cierre del cuatrimestre) y en el Cuarto período (segunda quincena de febrero) para intensificar lo que aún no aprobó (1°, 2° o ambos cuatrimestres).';
+                periodos = '1° Período (1°C): Primera quincena de julio (opcional segunda quincena de junio según Disp. 40/26) → 2° Período (puede ser para ambos según el caso: 1°C aún desaprobado o 2°C): Dos semanas previas al cierre del segundo cuatrimestre → 3° y 4° Período (para lo que aún no aprobó: 1°, 2° o ambos cuatrimestres): Dos semanas posteriores al cierre del cuatrimestre y segunda quincena de febrero.';
+            } else if (periodo === '2C') {
+                titulo = 'Intensifica en el Segundo período: dos semanas previas al cierre del segundo cuatrimestre (puede ser para ambos según el caso: primer cuatrimestre aún desaprobado o segundo cuatrimestre).';
+                texto = 'Aprueba la intensificación con 4 o más. Si no aprueba en ese período, sigue intensificando en el Tercer período (dos semanas posteriores al cierre del cuatrimestre) y en el Cuarto período (segunda quincena de febrero) para intensificar lo que aún no aprobó (1°, 2° o ambos cuatrimestres).';
+                periodos = '2° Período (puede ser para ambos según el caso: 1°C aún desaprobado o 2°C): Dos semanas previas al cierre del segundo cuatrimestre → 3° y 4° Período (para lo que aún no aprobó: 1°, 2° o ambos cuatrimestres): Dos semanas posteriores al cierre del cuatrimestre y segunda quincena de febrero.';
+            } else {
+                titulo = 'Intensifica el primer cuatrimestre en el Primer período (primera quincena de julio, opcional segunda quincena de junio) y en el Segundo período (dos semanas previas al cierre del segundo cuatrimestre), que puede ser para ambos según el caso (1°C aún desaprobado o 2°C).';
+                texto = 'Aprueba la intensificación con 4 o más. Si no aprueba, el Tercer período (dos semanas posteriores al cierre del cuatrimestre) y el Cuarto período (segunda quincena de febrero) sirven para intensificar lo que aún no aprobó (1°, 2° o ambos cuatrimestres).';
+                periodos = '1° Período (1°C): Primera quincena de julio (opcional segunda quincena de junio según Disp. 40/26) → 2° Período (puede ser para ambos según el caso: 1°C aún desaprobado o 2°C): Dos semanas previas al cierre del segundo cuatrimestre → 3° y 4° Período (para lo que aún no aprobó: 1°, 2° o ambos cuatrimestres): Dos semanas posteriores al cierre del cuatrimestre y segunda quincena de febrero.';
+            }
+
+            document.getElementById('tituloRespuesta').textContent = titulo;
+            document.getElementById('textoRespuesta').textContent = texto;
+            document.getElementById('detallePeriodos').textContent = periodos;
+        }
+
+        function limpiarSimple() {
+            document.getElementById('anioSelect').value = '4°';
+            document.getElementById('orientacionSelect').value = 'CS_SOCIALES';
+            document.getElementById('periodoSelect').value = '1C';
+            actualizarMaterias();
+            calcularSimple();
+        }
+
+        const ENLACES_DRIVE_ORIGINALES = {
+            DISP_40_26: {
+                titulo: 'Adecuaciones y Modificaciones del Régimen Académico — Disp. 40/26',
+                urlVista: 'https://drive.google.com/file/d/1tI6dXHs1ImN1hpzu5W1EYWD0YmN2xDnS/view?usp=drivesdk',
+                urlPreview: 'https://drive.google.com/file/d/1tI6dXHs1ImN1hpzu5W1EYWD0YmN2xDnS/preview',
+                urlDescargaDirecta: 'https://drive.google.com/uc?export=download&id=1tI6dXHs1ImN1hpzu5W1EYWD0YmN2xDnS',
+                nombreArchivo: 'Disp_40_26_Adecuaciones_Regimen_Academico.pdf'
+            },
+            RES_1650_24: {
+                titulo: 'Régimen Académico para la Educación Secundaria — Res. 1650/24',
+                urlVista: 'https://drive.google.com/file/d/1u51STd15Ma4VD0MWdenWphDKmnvL-uZG/view?usp=drivesdk',
+                urlPreview: 'https://drive.google.com/file/d/1u51STd15Ma4VD0MWdenWphDKmnvL-uZG/preview',
+                urlDescargaDirecta: 'https://drive.google.com/uc?export=download&id=1u51STd15Ma4VD0MWdenWphDKmnvL-uZG',
+                nombreArchivo: 'Res_1650_24_Regimen_Academico_PBA.pdf'
+            }
+        };
+
+        let documentoActivoId = 'DISP_40_26';
+
+        function abrirVisorDocumento(docId) {
+            documentoActivoId = ENLACES_DRIVE_ORIGINALES[docId] ? docId : 'DISP_40_26';
+            const cfg = ENLACES_DRIVE_ORIGINALES[documentoActivoId];
+            document.getElementById('tituloVisorDoc').textContent = cfg.titulo;
+            document.getElementById('paginasPdfContainer').innerHTML = `
+                <iframe src="${escapeHtml(cfg.urlPreview)}" class="w-full flex-grow min-h-[65vh] rounded-xl bg-white border-0" allow="autoplay"></iframe>
+                <div class="mt-2 bg-slate-900 text-slate-200 px-3 py-2 rounded-xl text-xs flex items-center justify-between gap-2">
+                    <span>PDF oficial desde Google Drive</span>
+                    <a href="${escapeHtml(cfg.urlVista)}" target="_blank" rel="noopener noreferrer" class="text-sky-300 font-bold underline">Abrir en Drive</a>
+                </div>
+            `;
+            document.getElementById('modalVisorDocumento').classList.remove('hidden');
+        }
+
+        function cerrarVisorDocumento() {
+            document.getElementById('modalVisorDocumento').classList.add('hidden');
+        }
+
+        function descargarDocumentoPdfDirecto(docId) {
+            const cfg = ENLACES_DRIVE_ORIGINALES[docId] || ENLACES_DRIVE_ORIGINALES[documentoActivoId];
+            const a = document.createElement('a');
+            a.href = cfg.urlDescargaDirecta;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.download = cfg.nombreArchivo;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function descargarDocumentoActual() {
+            descargarDocumentoPdfDirecto(documentoActivoId);
+        }
+
+        function escapeHtml(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        actualizarMaterias();
+        calcularSimple();
+    </script>
+</body>
+</html>
